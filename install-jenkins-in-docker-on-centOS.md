@@ -125,5 +125,12 @@ then plugins will be installed
 Now you can turn off the terminal and the Jenkins service continues
 
 
+## To do Next 
+
+Jenkins 컨테이너가 종료되더라도 기존 등록된 파이프라인 정보를 다시 읽을 수 있도록 세팅하는 방법을 추가해야 됨
+
+
+EOF
+
 
 
