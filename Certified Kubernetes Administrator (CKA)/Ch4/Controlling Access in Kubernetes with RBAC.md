@@ -12,71 +12,71 @@ Log in to the lab server using the credentials provided:
 ### **Create a Role for the dev User**
 1. Test access by attempting to list pods as the dev user:
 
-        kubectl get pods -n beebox-mobile --kubeconfig dev-k8s-config
+       kubectl get pods -n beebox-mobile --kubeconfig dev-k8s-config
     
     We'll get an error message.
 
 2. Create a role spec file:
 
-        vi pod-reader-role.yml
+       vi pod-reader-role.yml
 
 3. Add the following to the file:
 
-        apiVersion: rbac.authorization.k8s.io/v1
-        kind: Role
-        metadata:
-        namespace: beebox-mobile
-        name: pod-reader
-        rules:
-        - apiGroups: [""]
-        resources: ["pods", "pods/log"]
-        verbs: ["get", "watch", "list"]
+       apiVersion: rbac.authorization.k8s.io/v1
+       kind: Role
+       metadata:
+         namespace: beebox-mobile
+         name: pod-reader
+       rules:
+       - apiGroups: [""]
+         resources: ["pods", "pods/log"]
+         verbs: ["get", "watch", "list"]
 
 4. Save and exit the file by pressing Escape followed by :wq.
 
 5. Create the role:
 
-        kubectl apply -f pod-reader-role.yml
+       kubectl apply -f pod-reader-role.yml
 
 ### **Bind the Role to the dev User and Verify Your Setup Works**
 1. Create the RoleBinding spec file:
 
-        vi pod-reader-rolebinding.yml
+       vi pod-reader-rolebinding.yml
 2. Add the following to the file:
 
-        apiVersion: rbac.authorization.k8s.io/v1
-        kind: RoleBinding
-        metadata:
-        name: pod-reader
-        namespace: beebox-mobile
-        subjects:
-        - kind: User
-        name: dev
-        apiGroup: rbac.authorization.k8s.io
-        roleRef:
-        kind: Role
-        name: pod-reader
-        apiGroup: rbac.authorization.k8s.io
+       apiVersion: rbac.authorization.k8s.io/v1
+       kind: RoleBinding
+       metadata:
+         name: pod-reader
+         namespace: beebox-mobile
+       subjects:
+       - kind: User
+         name: dev
+         apiGroup: rbac.authorization.k8s.io
+       roleRef:
+         kind: Role
+         name: pod-reader
+         apiGroup: rbac.authorization.k8s.io
 
 3. Save and exit the file by pressing Escape followed by :wq.
 
 4. Create the RoleBinding:
 
-        kubectl apply -f pod-reader-rolebinding.yml
+       kubectl apply -f pod-reader-rolebinding.yml
 
 5. Test access again to verify you can successfully list pods:
 
-        kubectl get pods -n beebox-mobile --kubeconfig dev-k8s-config
+       kubectl get pods -n beebox-mobile --kubeconfig dev-k8s-config
     This time, we should see a list of pods (there's just one).
 
 6. Verify the dev user can read pod logs:
 
-        kubectl logs beebox-auth -n beebox-mobile --kubeconfig dev-k8s-config
+       kubectl logs beebox-auth -n beebox-mobile --kubeconfig dev-k8s-config
     We'll get an Auth processing... message.
 
 7. Verify the dev user cannot make changes by attempting to delete a pod:
 
-        kubectl delete pod beebox-auth -n beebox-mobile --kubeconfig dev-k8s-config
+       kubectl delete pod beebox-auth -n beebox-mobile --kubeconfig dev-k8s-config
 
     We'll get an error, which is what we want.
 
